@@ -1,3 +1,4 @@
+from locale import delocalize
 import numpy as np
 
 
@@ -35,6 +36,13 @@ def check_gradient(f, x, delta=1e-5, tol = 1e-4):
         numeric_grad_at_ix = 0
 
         # TODO compute value of numeric gradient of f to idx
+        x[ix] = x[ix] - delta
+        f1, _ = f(x)
+        x[ix] = x[ix] + 2 * delta
+        f2, _ = f(x)
+        x[ix] = x[ix] - delta
+
+        numeric_grad_at_ix = (f2 - f1) / (2 * delta)
         if not np.isclose(numeric_grad_at_ix, analytic_grad_at_ix, tol):
             print("Gradients are different at %s. Analytic: %2.5f, Numeric: %2.5f" % (ix, analytic_grad_at_ix, numeric_grad_at_ix))
             return False
